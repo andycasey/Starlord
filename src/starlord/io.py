@@ -6,6 +6,7 @@ from typing import Optional
 
 import numpy as np
 import requests
+from numpy.lib import recfunctions
 
 from ._config import config
 from .samplers import ResultStats
@@ -65,7 +66,8 @@ def load_simple_csv(filename: str | Path, ensure_name: bool = True) -> np.ndarra
     columns = data.dtype.names
     assert columns is not None, f"Failed to read column names in {filename}."
     if ensure_name and "name" not in columns:
-        data['name'] = np.arange(len(data))
+        # Structured arrays can't gain fields by assignment, so append one with the row indices
+        data = recfunctions.append_fields(data, "name", np.arange(len(data)).astype(str), usemask=False)
     return data
 
 
