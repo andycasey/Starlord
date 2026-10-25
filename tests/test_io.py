@@ -114,3 +114,11 @@ def test_simple_csv_without_names(tmp_path):
     assert list(data['name']) == ['0', '1']
     assert list(data['mean_a']) == [0.0, 3.0]
     assert list(data['std_a']) == [1.0, 0.2]
+
+
+def test_simple_csv_single_row(tmp_path):
+    csv = tmp_path / "consts.csv"
+    csv.write_text("name, mean_a, std_a\nfoo, 0.0, 1.0\n")
+    data = starlord.io.load_simple_csv(csv)
+    assert data.shape == (1, )
+    assert [str(row['name']) for row in data] == ['foo']
