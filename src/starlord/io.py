@@ -63,6 +63,8 @@ def load_simple_csv(filename: str | Path, ensure_name: bool = True) -> np.ndarra
         dtype=None,
         encoding="UTF-8",
     )
+    # genfromtxt returns a 0-d array for a single row, which can't be iterated over
+    data = np.atleast_1d(data)
     columns = data.dtype.names
     assert columns is not None, f"Failed to read column names in {filename}."
     if ensure_name and "name" not in columns:
